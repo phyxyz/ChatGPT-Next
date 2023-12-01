@@ -2,13 +2,14 @@ FROM node:18-alpine AS base
 
 FROM base AS deps
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn config set registry 'https://registry.npmmirror.com/'
+#RUN yarn config set registry 'https://registry.npmmirror.com/'
 RUN yarn install
 
 FROM base AS builder
@@ -27,11 +28,11 @@ RUN yarn build
 FROM base AS runner
 WORKDIR /app
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add proxychains-ng
 
 ENV PROXY_URL=""
 ENV OPENAI_API_KEY=""
-ENV CODE=""
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./

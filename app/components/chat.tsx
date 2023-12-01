@@ -34,6 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import { api } from "@/app/client/api";
 
 import {
   ChatMessage,
@@ -803,6 +804,21 @@ function _Chat() {
     deleteMessage(msgId);
   };
 
+  // 文本转语音
+  const onTextToSpeech = (message: ChatMessage) => {
+    console.log("正在执行文本转语音方法，消息内容:", message);
+    setIsLoading(true);
+    api.llm.speech(message.content).then((res) => {
+      console.log("文本转语音成功，返回结果:", res);
+      const blob = new Blob([res], { type: "audio/wav" });
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+      // 取消禁用
+      setIsLoading(false);
+    });
+  };
+
   const onResend = (message: ChatMessage) => {
     // when it is resending a message
     // 1. for a user's message, find the next bot response
@@ -1197,6 +1213,12 @@ function _Chat() {
                             />
                           ) : (
                             <>
+                              <ChatAction
+                                text={"语音"}
+                                icon={<RobotIcon />}
+                                onClick={() => onTextToSpeech(message)}
+                              />
+
                               <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
