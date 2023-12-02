@@ -325,5 +325,27 @@ export class ChatGPTApi implements LLMApi {
       available: true,
     }));
   }
+
+  public cache: Record<string, ArrayBuffer> = {};
+  async speech(input: string): Promise<ArrayBuffer> {
+    console.log("正在进行文本转语音，内容为", input);
+    if (this.cache[input]) return this.cache[input].slice(0);
+
+    const res = await fetch(this.path(OpenaiPath.Speech), {
+      method: "POST",
+      headers: {
+        ...getHeaders(),
+      },
+      body: JSON.stringify({
+        model: "tts-1",
+        input: input,
+        voice: "nova",
+      }),
+    });
+
+    const arrayBuffer = await res.arrayBuffer();
+    this.cache[input] = arrayBuffer.slice(0);
+    return arrayBuffer;
+  }
 }
 export { OpenaiPath };

@@ -527,24 +527,24 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
-      {showModelSelector && (
-        <Selector
-          defaultSelectedValue={currentModel}
-          items={models.map((m) => ({
-            title: m.displayName,
-            value: m.name,
-          }))}
-          onClose={() => setShowModelSelector(false)}
-          onSelection={(s) => {
-            if (s.length === 0) return;
-            chatStore.updateCurrentSession((session) => {
-              session.mask.modelConfig.model = s[0] as ModelType;
-              session.mask.syncGlobalConfig = false;
-            });
-            showToast(s[0]);
-          }}
-        />
-      )}
+      {/*{showModelSelector && (*/}
+      {/*  <Selector*/}
+      {/*    defaultSelectedValue={currentModel}*/}
+      {/*    items={models.map((m) => ({*/}
+      {/*      title: m.displayName,*/}
+      {/*      value: m.name,*/}
+      {/*    }))}*/}
+      {/*    onClose={() => setShowModelSelector(false)}*/}
+      {/*    onSelection={(s) => {*/}
+      {/*      if (s.length === 0) return;*/}
+      {/*      chatStore.updateCurrentSession((session) => {*/}
+      {/*        session.mask.modelConfig.model = s[0] as ModelType;*/}
+      {/*        session.mask.syncGlobalConfig = false;*/}
+      {/*      });*/}
+      {/*      showToast(s[0]);*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*)}*/}
     </div>
   );
 }
@@ -1340,6 +1340,13 @@ function _Chat() {
           }}
         />
       )}
+
+      {isLoading && (
+          <div className={styles["overlay"]}>
+            <div className={styles["loader"]}></div>
+          </div>
+      )}
+
     </div>
   );
 }
